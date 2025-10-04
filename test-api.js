@@ -47,6 +47,24 @@ const tests = [
     method: 'GET',
     path: '/banners',
     expectedStatus: 200
+  },
+  {
+    name: '👤 Get Profile',
+    method: 'GET',
+    path: '/profile',
+    expectedStatus: 200,
+    requiresAuth: true
+  },
+  {
+    name: '✏️ Update Profile',
+    method: 'PUT',
+    path: '/profile',
+    body: {
+      name: 'John Updated',
+      phone: '+1234567890'
+    },
+    expectedStatus: 200,
+    requiresAuth: true
   }
 ];
 

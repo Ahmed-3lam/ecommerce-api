@@ -171,6 +171,13 @@ Authorization: Bearer YOUR_TOKEN_HERE
 | `POST` | `/login` | User login | ❌ |
 | `POST` | `/register` | User registration | ❌ |
 
+### 👤 Profile Endpoints
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| `GET` | `/profile` | Get user profile | ✅ |
+| `PUT` | `/profile` | Update user profile | ✅ |
+
 ### 📦 Product Endpoints
 
 | Method | Endpoint | Description | Auth Required |
@@ -406,7 +413,59 @@ JWT_SECRET=your-secret-key-here
 node server.js
 ```
 
-### Production (with PM2)
+### Deploy to Render (Recommended)
+
+**Render** is a modern cloud platform that makes deployment simple and free for small projects.
+
+#### Step 1: Prepare Your Repository
+1. **Push your code to GitHub** (if not already done):
+   ```bash
+   git add .
+   git commit -m "Prepare for Render deployment"
+   git push origin main
+   ```
+
+#### Step 2: Deploy on Render
+1. **Go to [Render.com](https://render.com)** and sign up/login
+2. **Click "New +" → "Web Service"**
+3. **Connect your GitHub repository**
+4. **Configure the service:**
+   - **Name:** `ecommerce-api` (or your preferred name)
+   - **Environment:** `Node`
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start`
+   - **Plan:** `Free` (for testing/development)
+
+#### Step 3: Set Environment Variables
+In Render dashboard, add these environment variables:
+- `NODE_ENV` = `production`
+- `JWT_SECRET` = `your-secure-random-secret-key-here`
+- `PORT` = `10000` (Render's default)
+
+#### Step 4: Deploy
+- Click **"Create Web Service"**
+- Render will automatically build and deploy your API
+- Your API will be available at: `https://your-service-name.onrender.com`
+
+#### Step 5: Test Your Deployment
+```bash
+# Test health endpoint
+curl https://your-service-name.onrender.com/health
+
+# Test login
+curl -X POST https://your-service-name.onrender.com/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"john@example.com","password":"password"}'
+```
+
+#### Important Notes for Render:
+- ✅ **Free tier limitations:** Service may sleep after 15 minutes of inactivity
+- ✅ **Custom domains:** Available on paid plans
+- ✅ **HTTPS:** Automatically provided
+- ✅ **Auto-deploys:** Triggered on git push
+- ✅ **Health checks:** Built-in via `/health` endpoint
+
+### Alternative: Production (with PM2)
 ```bash
 npm install -g pm2
 pm2 start server.js --name "ecommerce-api"

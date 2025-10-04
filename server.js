@@ -9,10 +9,15 @@ const { createResponse } = require('./localization');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const JWT_SECRET = 'your-secret-key-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key-for-development-only';
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://your-frontend-domain.com'] // Update with your actual frontend domain
+    : true, // Allow all origins in development
+  credentials: true
+}));
 app.use(express.json());
 
 // Localization middleware
@@ -156,6 +161,69 @@ app.post('/register', async (req, res) => {
     };
 
     res.status(200).json(createResponse(201, responseData, 'registration_success', req.lang));
+  } catch (error) {
+    res.status(200).json(createResponse(500, null, 'server_error', req.lang));
+  }
+});
+
+// ==================== PROFILE ENDPOINTS ====================
+
+// GET /profile
+app.get('/profile', authenticateToken, (req, res) => {
+  try {
+    const user = data.users.find(u => u.id === req.user.userId);
+    
+    if (!user) {
+      return res.status(200).json(createResponse(404, null, 'user_not_found', req.lang));
+    }
+
+    // Return user profile without sensitive information
+    const profileData = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      image: user.image,
+      role: user.role,
+      createdAt: user.createdAt || new Date().toISOString()
+    };
+
+    res.status(200).json(createResponse(200, profileData, 'profile_retrieved', req.lang));
+  } catch (error) {
+    res.status(200).json(createResponse(500, null, 'server_error', req.lang));
+  }
+});
+
+// PUT /profile
+app.put('/profile', authenticateToken, (req, res) => {
+  try {
+    const { name, phone, image } = req.body;
+    
+    const userIndex = data.users.findIndex(u => u.id === req.user.userId);
+    
+    if (userIndex === -1) {
+      return res.status(200).json(createResponse(404, null, 'user_not_found', req.lang));
+    }
+
+    // Update only allowed fields
+    if (name) data.users[userIndex].name = name;
+    if (phone !== undefined) data.users[userIndex].phone = phone;
+    if (image) data.users[userIndex].image = image;
+
+    saveData();
+
+    // Return updated profile
+    const updatedProfile = {
+      id: data.users[userIndex].id,
+      name: data.users[userIndex].name,
+      email: data.users[userIndex].email,
+      phone: data.users[userIndex].phone,
+      image: data.users[userIndex].image,
+      role: data.users[userIndex].role,
+      createdAt: data.users[userIndex].createdAt || new Date().toISOString()
+    };
+
+    res.status(200).json(createResponse(200, updatedProfile, 'profile_updated', req.lang));
   } catch (error) {
     res.status(200).json(createResponse(500, null, 'server_error', req.lang));
   }
@@ -638,7 +706,9 @@ app.get('/orders/user/:userId', authenticateToken, (req, res) => {
 app.get('/health', (req, res) => {
   const responseData = { 
     status: 'OK', 
-    timestamp: new Date().toISOString() 
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    version: '1.0.0'
   };
   res.status(200).json(createResponse(200, responseData, 'health_check', req.lang));
 });

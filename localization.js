@@ -10,6 +10,9 @@ const messages = {
     access_token_required: "Access token required",
     invalid_token: "Invalid or expired token",
     access_denied: "Access denied",
+    profile_retrieved: "Profile retrieved successfully",
+    profile_updated: "Profile updated successfully",
+    user_not_found: "User not found",
     
     // Product messages
     products_retrieved: "Products retrieved successfully",
@@ -67,6 +70,9 @@ const messages = {
     access_token_required: "رمز الوصول مطلوب",
     invalid_token: "رمز غير صالح أو منتهي الصلاحية",
     access_denied: "تم رفض الوصول",
+    profile_retrieved: "تم استرداد الملف الشخصي بنجاح",
+    profile_updated: "تم تحديث الملف الشخصي بنجاح",
+    user_not_found: "المستخدم غير موجود",
     
     // Product messages
     products_retrieved: "تم استرداد المنتجات بنجاح",

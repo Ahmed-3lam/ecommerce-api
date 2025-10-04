@@ -5,7 +5,7 @@
       "name": "John Doe",
       "email": "john@example.com",
       "password": "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
-      "phone": "+1234567890",
+      "phone": "+9876543210",
       "image": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
       "role": "customer"
     },
@@ -220,13 +220,6 @@
     }
   ],
   "cart": [
-    {
-      "id": 1,
-      "userId": 1,
-      "productId": 1,
-      "quantity": 1,
-      "addedAt": "2024-01-20T10:00:00Z"
-    },
     {
       "id": 2,
       "userId": 1,
